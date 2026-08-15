@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kampong Basket — Neighbourhood Grocery Sharing</title>
+<meta name="description" content="A community platform for Singapore neighbourhoods to match grocery donations with households in need.">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#" data-goto="home">
+      <span class="mark" data-i18n="site_name">Kampong Basket</span>
+      <span class="tag" data-i18n="tagline">One neighbourhood, one basket — nobody goes without.</span>
+    </a>
+    <nav class="main-nav">
+      <button data-view="home" data-i18n="nav_home">Home</button>
+      <button data-view="request" data-i18n="nav_request">Request items</button>
+      <button data-view="offer" data-i18n="nav_offer">Offer items</button>
+      <button data-view="volunteer" data-i18n="nav_volunteer">Volunteer board</button>
+      <button data-view="track" data-i18n="nav_track">Check status</button>
+    </nav>
+    <div class="lang-switch">
+      <button data-lang="en">EN</button>
+      <button data-lang="zh">中文</button>
+      <button data-lang="ms">BM</button>
+      <button data-lang="ta">தமிழ்</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ============ HOME ============ -->
+  <section id="view-home" class="view">
+    <div class="hero">
+      <p class="section-eyebrow" data-i18n="how_it_works">How it works</p>
+      <h1 data-i18n="home_lead">A shared basket for the neighbourhood</h1>
+      <p class="lead" data-i18n="home_body">Households who need daily groceries can list what they need. Neighbours who bought in bulk, got a supermarket discount, or received freebies can offer the extra. Volunteers match the two sides and keep everyone updated.</p>
+      <div class="hero-ctas">
+        <button class="btn gold" data-goto="request" data-i18n="cta_request">I need groceries</button>
+        <button class="btn" data-goto="offer" data-i18n="cta_offer">I can offer groceries</button>
+        <button class="btn secondary" data-goto="volunteer" data-i18n="cta_volunteer">I want to volunteer</button>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="pin-card">
+        <div class="step-num">01</div>
+        <h3 data-i18n="step1_title">List it</h3>
+        <p data-i18n="step1_body">Requesters (or a volunteer helping them) list the items they need. Donors list what they can spare.</p>
+      </div>
+      <div class="pin-card">
+        <div class="step-num">02</div>
+        <h3 data-i18n="step2_title">Match it</h3>
+        <p data-i18n="step2_body">Volunteers match urgent requests with available donations and message both sides.</p>
+      </div>
+      <div class="pin-card">
+        <div class="step-num">03</div>
+        <h3 data-i18n="step3_title">Collect it</h3>
+        <p data-i18n="step3_body">Items are dropped at the collection point, then handed over. Full items turn from grey to colour.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REQUEST (needs) ============ -->
+  <section id="view-request" class="view">
+    <h2 data-i18n="request_title">List what your household needs</h2>
+    <p data-i18n="request_intro">Fill this in yourself, or a volunteer can fill it in on your behalf.</p>
+
+    <form id="need-form" class="panel">
+      <div class="field-row">
+        <div>
+          <label data-i18n="field_requester_name">Household / requester name</label>
+          <input type="text" id="need-requester-name" required>
+        </div>
+        <div>
+          <label data-i18n="field_contact">Contact number</label>
+          <input type="tel" id="need-contact" required>
+        </div>
+      </div>
+
+      <label data-i18n="field_submitted_by">Who is filling this in?</label>
+      <select id="need-submitted-by">
+        <option value="self" data-i18n="option_self">The requester, myself</option>
+        <option value="volunteer" data-i18n="option_volunteer">A volunteer, on their behalf</option>
+      </select>
+
+      <label data-i18n="field_urgency">How urgent is this?</label>
+      <div class="urgency-slider">
+        <span data-i18n="urgency_1">1 - Not urgent</span>
+        <input type="range" id="need-urgency" min="1" max="5" value="3">
+        <span data-i18n="urgency_5">5 - Very urgent</span>
+      </div>
+
+      <label data-i18n="field_notes">Anything else volunteers should know</label>
+      <textarea id="need-notes"></textarea>
+
+      <label data-i18n="set_pin">Set a 4-digit PIN (optional)</label>
+      <input type="password" id="need-pin" maxlength="4" pattern="[0-9]{4}" placeholder="1234">
+
+      <h3 style="margin-top:24px;" data-i18n="items_needed">Items needed</h3>
+      <div id="need-items-wrap"></div>
+      <button type="button" id="need-add-item" class="btn small secondary" style="margin-top:12px;" data-i18n="add_item">Add another item</button>
+
+      <div id="need-error" class="error-box" style="display:none;"></div>
+
+      <div style="margin-top:22px;">
+        <button type="submit" class="btn gold" data-i18n="submit_request">Submit request</button>
+      </div>
+    </form>
+
+    <div id="need-success" class="success-box" style="display:none;">
+      <h3 data-i18n="request_success_title">Request submitted</h3>
+      <p data-i18n="request_success_body">Your reference number is below. Save it — you will need it to check status.</p>
+      <span class="ref-id"></span>
+    </div>
+  </section>
+
+  <!-- ============ OFFER (donations) ============ -->
+  <section id="view-offer" class="view">
+    <h2 data-i18n="offer_title">Offer groceries to the neighbourhood</h2>
+
+    <form id="offer-form" class="panel">
+      <div class="field-row">
+        <div>
+          <label data-i18n="field_donor_name">Your name / organisation</label>
+          <input type="text" id="offer-donor-name" required>
+        </div>
+        <div>
+          <label data-i18n="field_contact">Contact number</label>
+          <input type="tel" id="offer-contact" required>
+        </div>
+      </div>
+
+      <label data-i18n="field_mode">How would you like to help?</label>
+      <div class="radio-row">
+        <label><input type="radio" name="offer-mode" value="direct" checked> <span data-i18n="mode_direct">Direct offer</span></label>
+        <label><input type="radio" name="offer-mode" value="bulk"> <span data-i18n="mode_bulk">Bulk purchase / freebies</span></label>
+      </div>
+
+      <label data-i18n="field_address">Collection point address</label>
+      <input type="text" id="offer-address" required>
+
+      <label data-i18n="field_notes">Anything else volunteers should know</label>
+      <textarea id="offer-notes"></textarea>
+
+      <label data-i18n="set_pin">Set a 4-digit PIN (optional)</label>
+      <input type="password" id="offer-pin" maxlength="4" pattern="[0-9]{4}" placeholder="1234">
+
+      <h3 style="margin-top:24px;" data-i18n="items_offered">Items offered</h3>
+      <div id="offer-items-wrap"></div>
+      <button type="button" id="offer-add-item" class="btn small secondary" style="margin-top:12px;" data-i18n="add_item">Add another item</button>
+
+      <div id="offer-error" class="error-box" style="display:none;"></div>
+
+      <div style="margin-top:22px;">
+        <button type="submit" class="btn gold" data-i18n="submit_offer">Submit offer</button>
+      </div>
+    </form>
+
+    <div id="offer-success" class="success-box" style="display:none;">
+      <h3 data-i18n="offer_success_title">Offer submitted</h3>
+      <p data-i18n="offer_success_body">Thank you! Your reference number is below.</p>
+      <span class="ref-id"></span>
+    </div>
+  </section>
+
+  <!-- ============ TRACK ============ -->
+  <section id="view-track" class="view">
+    <h2 data-i18n="track_title">Check status</h2>
+    <p data-i18n="track_intro">Enter your reference number to see progress.</p>
+    <form id="track-form" class="panel">
+      <div class="field-row">
+        <div>
+          <label data-i18n="field_ref">Reference number</label>
+          <input type="text" id="track-ref" required placeholder="NEED-00001-AB2C">
+        </div>
+        <div>
+          <label data-i18n="field_pin_check">PIN (if you set one)</label>
+          <input type="password" id="track-pin" maxlength="4">
+        </div>
+      </div>
+      <button type="submit" class="btn gold" style="margin-top:14px;" data-i18n="check_status">Check status</button>
+    </form>
+    <div id="track-result"></div>
+  </section>
+
+  <!-- ============ VOLUNTEER BOARD ============ -->
+  <section id="view-volunteer" class="view">
+    <h2 data-i18n="volunteer_title">Volunteer matching board</h2>
+    <p data-i18n="volunteer_intro">Run the matching pass, review pairings, and mark items as collected once handed over.</p>
+    <button id="vol-run-matching" class="btn gold" data-i18n="run_matching">Run matching now</button>
+    <div id="vol-match-summary" class="match-summary" style="display:none;"></div>
+
+    <div class="vol-grid two-col">
+      <div class="vol-col">
+        <h3><span data-i18n="pending_needs">Pending requests</span> <span class="count-badge" id="vol-pending-count">0</span></h3>
+        <div id="vol-pending-list"></div>
+      </div>
+      <div class="vol-col">
+        <h3><span data-i18n="available_offers">Available offers</span> <span class="count-badge" id="vol-available-count">0</span></h3>
+        <div id="vol-available-list"></div>
+      </div>
+    </div>
+
+    <div class="vol-col" style="margin-top:26px;">
+      <h3><span data-i18n="matched_pairs">Matched, awaiting collection</span> <span class="count-badge" id="vol-matched-count">0</span></h3>
+      <div id="vol-matched-list"></div>
+    </div>
+
+    <div class="vol-col" style="margin-top:30px;">
+      <h3 data-i18n="audit_title">Full audit trail</h3>
+      <table class="audit-table">
+        <thead><tr><th>Donation item</th><th>Item</th><th>Status</th><th>Reserved for</th></tr></thead>
+        <tbody id="vol-audit-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p data-i18n="footer_note">A community prototype. Please verify collection point details in person before travelling.</p>
+  </div>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
